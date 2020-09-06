@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:AN_shop_application/constant_and_enums.dart';
 import 'package:AN_shop_application/models/shopping_models/product.dart';
 import 'package:AN_shop_application/widgets/shopping_widgets/Adding_To_Cart_fav.dart';
 import 'package:AN_shop_application/widgets/shopping_widgets/SABT.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -83,6 +85,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                   ),
                   Transform.translate(
                     offset: Offset.fromDirection(
+                        getRadianFromDegree(225), 100 * degOneTranslate.value),
+                    child: Transform.rotate(
+                        angle: rotationAnimation.value,
+                        child: Builder(
+                          builder: (context) => CircularButton(
+                            50,
+                            Icon(Icons.account_circle),
+                            Colors.deepPurple,
+                            onClick: () {
+                              chatWithOwner();
+                            },
+                          ),
+                        )),
+                  ),
+                  Transform.translate(
+                    offset: Offset.fromDirection(
                         getRadianFromDegree(180), 100 * degOneTranslate.value),
                     child: Transform.rotate(
                       angle: (2 * pi) - rotationAnimation.value,
@@ -116,31 +134,53 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   }
 }
 
-class ProductDataisScreenContent extends StatelessWidget {
-  const ProductDataisScreenContent({
-    Key key,
+class ProductDataisScreenContent extends StatefulWidget {
+  ProductDataisScreenContent({
     @required this.size,
-    @required Product product,
-  })  : _product = product,
-        super(key: key);
+    @required this.product,
+  });
 
   final Size size;
-  final Product _product;
+  final Product product;
+
+  @override
+  _ProductDataisScreenContentState createState() =>
+      _ProductDataisScreenContentState();
+}
+
+class _ProductDataisScreenContentState
+    extends State<ProductDataisScreenContent> {
+  var productOwnerImageURL = '', ownerName = '';
+
+  @override
+  void initState() {
+    FirebaseFirestore.instance
+        .collection(UsersCollection)
+        .doc(widget.product.ownerID)
+        .get()
+        .then((value) {
+      setState(() {
+        productOwnerImageURL = value.data()[USER_IMAGE];
+        ownerName = value.data()[UserName];
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
         SliverAppBar(
-          expandedHeight: 4 * size.height / 5,
+          expandedHeight: 4 * widget.size.height / 5,
           floating: true,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
-            title: SABT(child: Text(_product.name)),
+            title: SABT(child: Text(widget.product.name)),
             background: Hero(
-              tag: _product.id,
+              tag: widget.product.id,
               child: CachedNetworkImage(
-                  imageUrl: _product.imageURL,
+                  imageUrl: widget.product.imageURL,
                   fit: BoxFit.fill,
                   placeholder: (context, url) => CircularProgressIndicator(),
                   errorWidget: (context, url, error) => Icon(Icons.error)),
@@ -152,10 +192,57 @@ class ProductDataisScreenContent extends StatelessWidget {
             delegate: SliverChildListDelegate([
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(_product.description),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Owner: '),
+                if (productOwnerImageURL != '')
+                  OwnerDisplayer(productOwnerImageURL: productOwnerImageURL, ownerName: ownerName),
+                
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(widget.product.description),
           ),
         ])),
       ],
+    );
+  }
+}
+
+class OwnerDisplayer extends StatelessWidget {
+  const OwnerDisplayer({
+    Key key,
+    @required this.productOwnerImageURL,
+    @required this.ownerName,
+  }) : super(key: key);
+
+  final String productOwnerImageURL;
+  final String ownerName;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => chatWithOwner(), 
+          child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CachedNetworkImage(
+              imageUrl: productOwnerImageURL,
+              height: 50,
+              width: 50,
+              placeholder: (context, url) => CircularProgressIndicator(),
+              imageBuilder: (context, imageProvider) => CircleAvatar(
+                backgroundImage: imageProvider,
+              ),
+            ),
+          ),
+          Text(ownerName)
+        ],
+      ),
     );
   }
 }
@@ -186,4 +273,9 @@ class CircularButton extends StatelessWidget {
             ),
     );
   }
+}
+
+
+void chatWithOwner(){
+  print('chating with owner to be implemented');//TODO : implement chatting with owner
 }

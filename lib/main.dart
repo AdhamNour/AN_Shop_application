@@ -21,8 +21,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
-
 void main() {
   runApp(MyApp());
 }
@@ -104,7 +102,9 @@ class MyApp extends StatelessWidget {
                         .get()
                         .then((value) {
                       final d = value.data()[USER_FAVORITE];
-
+                      if (d == null) {
+                        return;
+                      }
                       List<String> str = [];
                       for (int i = 0; i < d.length; i++) {
                         str.add(d[i] as String);

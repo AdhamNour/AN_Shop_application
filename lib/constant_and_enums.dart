@@ -9,6 +9,7 @@ const String USER_OREDER_ITEMS = 'user_order_items';
 const String USER_ORDER_TOTAL_PRICE = 'user_order_total_price';
 const String USER_ORDER_PAYMENT_METHOD = 'user_order_payment_method';
 const String USER_ORDER_DATE ='user_order_date';
+const String USER_IMAGE ='user_image';
 
 const String PRODUCTS = 'products';
 const String PRODUCT_NAME = 'name';
@@ -18,6 +19,8 @@ const String PRODUCT_PRICE = 'Price';
 const String PRODUCT_OWNER_ID = 'ownerId';
 
 const String CART_ITEM_AMOUNT = 'amount';
+
+const String USER_IMAGES_STORAGE = 'userImage';
 
 const String LOGIN = 'Login';
 const String SIGNUP = 'Sign Up';
