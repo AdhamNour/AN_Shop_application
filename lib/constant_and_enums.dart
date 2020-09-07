@@ -22,6 +22,7 @@ const String PRODUCT_OWNER_ID = 'ownerId';
 const String CART_ITEM_AMOUNT = 'amount';
 
 const String USER_IMAGES_STORAGE = 'userImage';
+const String USER_PRODUCT_IMAGES_STORAGE = 'user_product_images_storage';
 
 const String MESSAGE_SENDER_ID = 'sender_id';
 const String MESSAGE_RECIVER_ID = 'reciver_id';

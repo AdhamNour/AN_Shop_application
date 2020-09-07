@@ -34,6 +34,10 @@ class _AuthWidgetState extends State<AuthWidget>
   AnimationController profilePictureAnimationController;
   Animation profilePictionAnimation;
 
+  FocusNode usernameFocusNode = FocusNode(),
+      passwoedFocusNode = FocusNode(),
+      confirmPasswordFocusNode = FocusNode();
+
   void signUp() async {
     await Firebase.initializeApp();
     try {
@@ -49,7 +53,7 @@ class _AuthWidgetState extends State<AuthWidget>
           .child(FirebaseAuth.instance.currentUser.uid + '.jpg');
       await ref.putFile(_profileImage).onComplete;
       final x = await ref.getDownloadURL();
-      print(x);
+
       await FirebaseFirestore.instance
           .collection(UsersCollection)
           .doc(FirebaseAuth.instance.currentUser.uid)
@@ -149,11 +153,11 @@ class _AuthWidgetState extends State<AuthWidget>
           elevation: 7,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 300),
-              //height: _isLogingIn ? 214 : (260.0 + 232.0),
-              child: Form(
-                  key: _formKey,
+            child: Form(
+                key: _formKey,
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  height: _isLogingIn ? 200 : 300,
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -162,6 +166,9 @@ class _AuthWidgetState extends State<AuthWidget>
                           onTap: () async {
                             final image = await ImagePicker()
                                 .getImage(source: ImageSource.camera);
+                            if (image == null) {
+                              return;
+                            }
                             setState(() {
                               _profileImage = File(image.path);
                             });
@@ -181,6 +188,11 @@ class _AuthWidgetState extends State<AuthWidget>
                         ),
                         TextFormField(
                           decoration: InputDecoration(labelText: 'E-Mail'),
+                          onFieldSubmitted: (value) => FocusScope.of(context)
+                              .requestFocus(_isLogingIn
+                                  ? passwoedFocusNode
+                                  : usernameFocusNode),
+                          keyboardType: TextInputType.emailAddress,
                           validator: (value) => EmailValidator.validate(value)
                               ? null
                               : 'enter a valid email',
@@ -193,15 +205,28 @@ class _AuthWidgetState extends State<AuthWidget>
                               minHeight: !_isLogingIn ? 59 : 0,
                               maxHeight: !_isLogingIn ? 119 : 0),
                           child: TextFormField(
+                            focusNode: usernameFocusNode,
                             decoration:
                                 InputDecoration(labelText: 'Your username'),
+                            onFieldSubmitted: (value) => FocusScope.of(context)
+                                .requestFocus(passwoedFocusNode),
                             onSaved: (newValue) => username = newValue,
+                            validator: (value) => value.isEmpty
+                                ? "username field is left empty"
+                                : null,
                           ),
                         ),
                         TextFormField(
+                          focusNode: passwoedFocusNode,
                           decoration: InputDecoration(labelText: 'password'),
-                          validator: (value) =>
-                              estimatePasswordStrength(value) < 0.3
+                          obscureText: true,
+                          onFieldSubmitted: (value) => _isLogingIn
+                              ? _trySubmet()
+                              : FocusScope.of(context)
+                                  .requestFocus(confirmPasswordFocusNode),
+                          validator: (value) => _isLogingIn
+                              ? null
+                              : estimatePasswordStrength(value) < 0.3
                                   ? 'this password is week !'
                                   : null,
                           controller: passwordController,
@@ -214,6 +239,9 @@ class _AuthWidgetState extends State<AuthWidget>
                               minHeight: !_isLogingIn ? 59 : 0,
                               maxHeight: !_isLogingIn ? 119 : 0),
                           child: TextFormField(
+                            focusNode: confirmPasswordFocusNode,
+                            obscureText: true,
+                            onFieldSubmitted: (value) => _trySubmet(),
                             decoration:
                                 InputDecoration(labelText: 'confirm password'),
                             validator: (value) => passwordController.text !=
@@ -243,8 +271,8 @@ class _AuthWidgetState extends State<AuthWidget>
                                 : HAVE_AN_ACCOUNT)),
                       ],
                     ),
-                  )),
-            ),
+                  ),
+                )),
           ),
         ),
       ],

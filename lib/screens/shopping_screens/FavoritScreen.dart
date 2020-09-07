@@ -10,16 +10,30 @@ class FavoritesScreen extends StatelessWidget {
     final _items = Provider.of<Favorites>(context).items;
     return Scaffold(
       appBar: AppBar(title: Text('Your Favorite')),
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 16 / 9,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5),
-        itemBuilder: (context, index) =>
-            ProductItemWidget(_items[index], false),
-        itemCount: _items.length,
-      ),
+      body: _items.length == 0
+          ? Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.favorite_border,
+                      color: Colors.red,
+                      size: 60,
+                    ),
+                    Text('No Favorites added Yet!')
+                  ],
+                  mainAxisSize: MainAxisSize.min,
+                ),
+              )
+          : GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 16 / 9,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5),
+              itemBuilder: (context, index) =>
+                  ProductItemWidget(_items[index], false),
+              itemCount: _items.length,
+            ),
     );
   }
 }

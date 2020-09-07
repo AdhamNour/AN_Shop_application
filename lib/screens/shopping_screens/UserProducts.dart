@@ -25,7 +25,19 @@ class UserProductsScreen extends StatelessWidget {
           )
         ],
       ),
-      body: ListView.builder(
+      body: _items.length == 0? Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.warning,
+                      color: Colors.red,
+                      size: 60,
+                    ),
+                    Text('No owned products added Yet!')
+                  ],
+                  mainAxisSize: MainAxisSize.min,
+                ),
+              ) : ListView.builder(
         itemBuilder: (context, index) =>
             OwnedByUserProductItemWidget(_items[index]),
         itemCount: _items.length,

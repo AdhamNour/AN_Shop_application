@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           future: Firebase.initializeApp(),
           builder: (context, appInitsnapshot) {
             if (appInitsnapshot.connectionState == ConnectionState.waiting) {
-              return Text('Dont forget to add splash screen');
+              return Text('Dont forget to add splash screen'); //TODO : add splash screen
             } else {
               return StreamBuilder(
                 stream: FirebaseAuth.instance.authStateChanges(),
@@ -102,6 +102,9 @@ class MyApp extends StatelessWidget {
                         .doc(FirebaseAuth.instance.currentUser.uid)
                         .get()
                         .then((value) {
+                          if(value == null){
+                            return;
+                          }
                       final d = value.data()[USER_FAVORITE];
                       if (d == null) {
                         return;

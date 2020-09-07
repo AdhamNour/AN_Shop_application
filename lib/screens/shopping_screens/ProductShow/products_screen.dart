@@ -31,7 +31,19 @@ class ProductsScreen extends StatelessWidget {
               })
         ],
       ),
-      body: ListView.builder(
+      body: _items.length == 0? Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.warning,
+                      color: Colors.red,
+                      size: 60,
+                    ),
+                    Text('No Products availabe Yet!')
+                  ],
+                  mainAxisSize: MainAxisSize.min,
+                ),
+              ): ListView.builder(
         itemBuilder: (context, index) => ProductItemWidget(_items[index], true),
         itemCount: _items.length,
       ),

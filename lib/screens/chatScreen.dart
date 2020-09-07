@@ -16,6 +16,31 @@ class ChatScreen extends StatelessWidget {
       ),
       body: StreamBuilder(
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(
+              child: Center(
+                child: Column(
+                  children: [CircularProgressIndicator(), Text('loading')],
+                  mainAxisSize: MainAxisSize.min,
+                ),
+              ),
+            );
+          }
+          if(snapshot.data.docs.length == 0){
+            return Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.warning,
+                      color: Colors.red,
+                      size: 60,
+                    ),
+                    Text('No conversations available Yet!')
+                  ],
+                  mainAxisSize: MainAxisSize.min,
+                ),
+              );
+          }
           Set<String> reciverIDs = new Set();
           snapshot.data.docs.forEach((element) {
             reciverIDs.add(element.data()[MESSAGE_RECIVER_ID]);
@@ -24,8 +49,12 @@ class ChatScreen extends StatelessWidget {
           reciverIDs.remove(FirebaseAuth.instance.currentUser.uid);
           var reciverIDsList = reciverIDs.toList();
           return ListView.builder(
-            itemBuilder: (context, index) =>
-                SellerWidget(reciverIDsList[index],onTap: () => Navigator.of(context).pushNamed(MessagesScreen.routeName,arguments: reciverIDsList[index]),),
+            itemBuilder: (context, index) => SellerWidget(
+              reciverIDsList[index],
+              onTap: () => Navigator.of(context).pushNamed(
+                  MessagesScreen.routeName,
+                  arguments: reciverIDsList[index]),
+            ),
             itemCount: reciverIDsList.length,
           );
         },
