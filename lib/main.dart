@@ -7,13 +7,14 @@ import 'package:AN_shop_application/providers/shopping_providers/FavoritesProvid
 import 'package:AN_shop_application/providers/shopping_providers/OrdersProvider.dart';
 import 'package:AN_shop_application/providers/shopping_providers/ProductsProviders.dart';
 import 'package:AN_shop_application/screens/AuthScreen.dart';
+import 'package:AN_shop_application/screens/chatScreen.dart';
+import 'package:AN_shop_application/screens/messagesScreen.dart';
 import 'package:AN_shop_application/screens/shopping_screens/CartScreen.dart';
 import 'package:AN_shop_application/screens/shopping_screens/EditingProductScreen.dart';
 import 'package:AN_shop_application/screens/shopping_screens/FavoritScreen.dart';
 import 'package:AN_shop_application/screens/shopping_screens/OrdersScreen.dart';
-import 'package:AN_shop_application/screens/shopping_screens/UserProducts.dart';
-import 'package:AN_shop_application/screens/shopping_screens/chatScreen.dart';
 import 'package:AN_shop_application/screens/shopping_screens/ProductShow/ProductDetailsScreen.dart';
+import 'package:AN_shop_application/screens/shopping_screens/UserProducts.dart';
 import 'package:AN_shop_application/screens/shopping_screens/ProductShow/products_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -173,7 +174,8 @@ class MyApp extends StatelessWidget {
           OrdersScreen.routeName: (ctx) => OrdersScreen(),
           UserProductsScreen.routename: (ctx) => UserProductsScreen(),
           ChatScreen.routeName: (ctx) => ChatScreen(),
-          EditProductScreen.routeName: (ctx) => EditProductScreen()
+          EditProductScreen.routeName: (ctx) => EditProductScreen(),
+          MessagesScreen.routeName : (ctx) => MessagesScreen(),
         },
       ),
     );

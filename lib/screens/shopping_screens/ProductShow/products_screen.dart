@@ -19,15 +19,6 @@ class ProductsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Product Screen'),
         actions: [
-          Builder(
-            builder: (context) => IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                          'search feature would be implemented , stay tuned')));
-                }),
-          ),
           IconButton(
               icon: Icon(Icons.favorite),
               onPressed: () {

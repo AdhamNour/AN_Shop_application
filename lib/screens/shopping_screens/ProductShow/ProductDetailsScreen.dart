@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:AN_shop_application/constant_and_enums.dart';
 import 'package:AN_shop_application/models/shopping_models/product.dart';
+import 'package:AN_shop_application/screens/messagesScreen.dart';
+import 'package:AN_shop_application/widgets/Seller.dart';
 import 'package:AN_shop_application/widgets/shopping_widgets/Adding_To_Cart_fav.dart';
 import 'package:AN_shop_application/widgets/shopping_widgets/SABT.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -94,7 +96,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                             Icon(Icons.account_circle),
                             Colors.deepPurple,
                             onClick: () {
-                              chatWithOwner();
+                              chatWithOwner(context, _product.ownerID);
                             },
                           ),
                         )),
@@ -150,22 +152,7 @@ class ProductDataisScreenContent extends StatefulWidget {
 
 class _ProductDataisScreenContentState
     extends State<ProductDataisScreenContent> {
-  var productOwnerImageURL = '', ownerName = '';
 
-  @override
-  void initState() {
-    FirebaseFirestore.instance
-        .collection(UsersCollection)
-        .doc(widget.product.ownerID)
-        .get()
-        .then((value) {
-      setState(() {
-        productOwnerImageURL = value.data()[USER_IMAGE];
-        ownerName = value.data()[UserName];
-      });
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,11 +180,9 @@ class _ProductDataisScreenContentState
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('Owner: '),
-                if (productOwnerImageURL != '')
-                  OwnerDisplayer(productOwnerImageURL: productOwnerImageURL, ownerName: ownerName),
+                Expanded(child: SellerWidget(widget.product.ownerID,onTap: ()=>chatWithOwner(context,widget.product.ownerID),))
                 
               ],
             ),
@@ -208,41 +193,6 @@ class _ProductDataisScreenContentState
           ),
         ])),
       ],
-    );
-  }
-}
-
-class OwnerDisplayer extends StatelessWidget {
-  const OwnerDisplayer({
-    Key key,
-    @required this.productOwnerImageURL,
-    @required this.ownerName,
-  }) : super(key: key);
-
-  final String productOwnerImageURL;
-  final String ownerName;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => chatWithOwner(), 
-          child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CachedNetworkImage(
-              imageUrl: productOwnerImageURL,
-              height: 50,
-              width: 50,
-              placeholder: (context, url) => CircularProgressIndicator(),
-              imageBuilder: (context, imageProvider) => CircleAvatar(
-                backgroundImage: imageProvider,
-              ),
-            ),
-          ),
-          Text(ownerName)
-        ],
-      ),
     );
   }
 }
@@ -276,6 +226,9 @@ class CircularButton extends StatelessWidget {
 }
 
 
-void chatWithOwner(){
-  print('chating with owner to be implemented');//TODO : implement chatting with owner
+void chatWithOwner(BuildContext context,String ownerID){
+  if(ownerID == FirebaseAuth.instance.currentUser.uid){
+    return;
+  }
+  Navigator.of(context).pushNamed(MessagesScreen.routeName,arguments: ownerID);
 }

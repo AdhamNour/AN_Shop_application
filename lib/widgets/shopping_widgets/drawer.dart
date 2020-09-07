@@ -1,9 +1,9 @@
 import 'package:AN_shop_application/constant_and_enums.dart';
+import 'package:AN_shop_application/screens/chatScreen.dart';
 import 'package:AN_shop_application/screens/shopping_screens/CartScreen.dart';
 import 'package:AN_shop_application/screens/shopping_screens/FavoritScreen.dart';
 import 'package:AN_shop_application/screens/shopping_screens/OrdersScreen.dart';
 import 'package:AN_shop_application/screens/shopping_screens/UserProducts.dart';
-import 'package:AN_shop_application/screens/shopping_screens/chatScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
