@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           future: Firebase.initializeApp(),
           builder: (context, appInitsnapshot) {
             if (appInitsnapshot.connectionState == ConnectionState.waiting) {
-              return Text('Dont forget to add splash screen'); //TODO : add splash screen
+              return Scaffold(body: Center(child: CircularProgressIndicator(),),); //TODO : add splash screen
             } else {
               return StreamBuilder(
                 stream: FirebaseAuth.instance.authStateChanges(),
