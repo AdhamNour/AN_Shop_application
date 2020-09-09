@@ -156,43 +156,48 @@ class _ProductDataisScreenContentState
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          expandedHeight: 4 * widget.size.height / 5,
-          floating: true,
-          pinned: true,
-          flexibleSpace: FlexibleSpaceBar(
-            title: SABT(child: Text(widget.product.name)),
-            background: Hero(
-              tag: widget.product.id,
-              child: CachedNetworkImage(
-                  imageUrl: widget.product.imageURL,
-                  fit: BoxFit.fill,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error)),
-            ),
-            centerTitle: true,
-          ),
-        ),
-        SliverList(
-            delegate: SliverChildListDelegate([
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Text('Owner: '),
-                Expanded(child: SellerWidget(widget.product.ownerID,onTap: ()=>chatWithOwner(context,widget.product.ownerID),))
-                
-              ],
+    return SafeArea(
+          child: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 4 * widget.size.height / 5,
+            floating: true,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: SABT(child: Text(widget.product.name)),
+              ),
+              background: Hero(
+                tag: widget.product.id,
+                child: CachedNetworkImage(
+                    imageUrl: widget.product.imageURL,
+                    fit: BoxFit.fill,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error)),
+              ),
+              centerTitle: true,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(widget.product.description),
-          ),
-        ])),
-      ],
+          SliverList(
+              delegate: SliverChildListDelegate([
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text('Owner: '),
+                  Expanded(child: SellerWidget(widget.product.ownerID,onTap: ()=>chatWithOwner(context,widget.product.ownerID),))
+                  
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(widget.product.description),
+            ),
+          ])),
+        ],
+      ),
     );
   }
 }

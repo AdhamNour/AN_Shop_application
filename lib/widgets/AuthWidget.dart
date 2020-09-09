@@ -9,7 +9,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:password_strength/password_strength.dart';
 
 class AuthWidget extends StatefulWidget {
@@ -64,6 +63,7 @@ class _AuthWidgetState extends State<AuthWidget>
   }
 
   void signIn() async {
+    print('hello from signing in');
     await Firebase.initializeApp();
     try {
       await FirebaseAuth.instance
@@ -104,6 +104,7 @@ class _AuthWidgetState extends State<AuthWidget>
   }
 
   void _trySubmet() {
+    print('hello from try subment');
     final isValid = _formKey.currentState.validate();
     if (!isValid) {
       return;
@@ -131,15 +132,6 @@ class _AuthWidgetState extends State<AuthWidget>
     profilePictureAnimationController.addListener(() {
       setState(() {});
     });
-    KeyboardVisibilityNotification().addNewListener(
-      onChange: (visible) {
-        if (visible && !_isLogingIn) {
-          currentAlignment = MainAxisAlignment.start;
-        } else {
-          currentAlignment = MainAxisAlignment.center;
-        }
-      },
-    );
   }
 
   @override
@@ -211,7 +203,7 @@ class _AuthWidgetState extends State<AuthWidget>
                             onFieldSubmitted: (value) => FocusScope.of(context)
                                 .requestFocus(passwoedFocusNode),
                             onSaved: (newValue) => username = newValue,
-                            validator: (value) => value.isEmpty
+                            validator: (value) => value.isEmpty&& !_isLogingIn
                                 ? "username field is left empty"
                                 : null,
                           ),
@@ -245,7 +237,7 @@ class _AuthWidgetState extends State<AuthWidget>
                             decoration:
                                 InputDecoration(labelText: 'confirm password'),
                             validator: (value) => passwordController.text !=
-                                    value
+                                    value && !_isLogingIn
                                 ? 'the text in password and confirm password field are not alike'
                                 : null,
                           ),

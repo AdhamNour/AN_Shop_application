@@ -56,13 +56,21 @@ class MyApp extends StatelessWidget {
           future: Firebase.initializeApp(),
           builder: (context, appInitsnapshot) {
             if (appInitsnapshot.connectionState == ConnectionState.waiting) {
-              return Scaffold(body: Center(child: CircularProgressIndicator(),),); //TODO : add splash screen
+              return Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
             } else {
               return StreamBuilder(
                 stream: FirebaseAuth.instance.authStateChanges(),
                 builder: (context, authSnapShot) {
                   if (authSnapShot.connectionState == ConnectionState.waiting) {
-                    return Text('Dont forget to add splash screen');
+                    return Scaffold(
+                      body: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
                   }
                   if (authSnapShot.hasData) {
                     if (productStream == null) {
@@ -102,9 +110,9 @@ class MyApp extends StatelessWidget {
                         .doc(FirebaseAuth.instance.currentUser.uid)
                         .get()
                         .then((value) {
-                          if(value == null){
-                            return;
-                          }
+                      if (value == null) {
+                        return;
+                      }
                       final d = value.data()[USER_FAVORITE];
                       if (d == null) {
                         return;
@@ -178,7 +186,7 @@ class MyApp extends StatelessWidget {
           UserProductsScreen.routename: (ctx) => UserProductsScreen(),
           ChatScreen.routeName: (ctx) => ChatScreen(),
           EditProductScreen.routeName: (ctx) => EditProductScreen(),
-          MessagesScreen.routeName : (ctx) => MessagesScreen(),
+          MessagesScreen.routeName: (ctx) => MessagesScreen(),
         },
       ),
     );
